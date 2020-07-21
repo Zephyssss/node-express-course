@@ -1,6 +1,9 @@
 const express = require("express");
+const bodyParser = require("body-parser");
 const app = express();
-const mockUserData = [{ name: "Mark" },{name:"Jill"}];
+
+app.use(bodyParser.json());
+const mockUserData = [{ name: "Mark" }, { name: "Jill" }];
 
 app.get("/users", (req, res) => {
   res.json({
@@ -10,15 +13,40 @@ app.get("/users", (req, res) => {
   });
 });
 
-app.get("/users/:id",(req,res)=>{
-  console.log(req.params.id)
+app.get("/users/:id", (req, res) => {
+  console.log(req.params.id);
   res.json({
     success: true,
     message: "get one user",
-    user: req.params.id
-  })
-})
+    user: req.params.id,
+  });
+});
+
+app.post("/login", function (req, res) {
+  // Typically passwords are encrypted using something like bcrypt before sending to database
+  const username = req.body.username;
+  const password = req.body.password;
+
+  // This should come from the database
+  const mockUsername = "billyTheKid";
+  const mockPassword = "superSecret";
+
+  console.log(req.body);
+  if (username === mockUsername && password === mockPassword) {
+    // In practice, use JSON web token sign method here to make an encrypted token
+    res.json({
+      success: true,
+      message: "password and username match!",
+      token: "encrypted token goes here",
+    });
+  } else {
+    res.json({
+      success: false,
+      message: "password and username do not match",
+    });
+  }
+});
 
 app.listen(8080, () => {
-  console.log("server is running!");
+  console.log("server is listening!");
 });
